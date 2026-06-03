@@ -1,0 +1,23 @@
+node_modules
+dist
+out
+.DS_Store
+.eslintcache
+*.log*
+.env
+
+# Local Database
+*.db
+*.sqlite
+
+# Test output
+coverage
+
+# AI tools
+.agents
+.claude
+CLAUDE.md
+skills-lock.json
+
+# Release files (guide interne, ne pas publier)
+RELEASE.md
