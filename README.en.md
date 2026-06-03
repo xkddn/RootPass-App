@@ -60,7 +60,7 @@ Coverage includes `src/main/` and `src/renderer/src/utils/` — crypto, database
 
 ## Open Source & Download
 
-RootPass is 100% open source and free. You can audit the code to verify the security model, build it yourself, or download ready-to-use releases (Windows, macOS, Linux) from the **[website]()**.
+RootPass is 100% open source and free. You can audit the code to verify the security model, build it yourself, or download ready-to-use releases (Windows, macOS, Linux) from the **[website](https://root-pass-website.vercel.app/)**.
 
 ## Contributing
 
