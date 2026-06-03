@@ -60,7 +60,7 @@ Couverture : `src/main/` et `src/renderer/src/utils/` — crypto, base de donné
 
 ## Open Source & Téléchargement
 
-RootPass est un projet 100 % open source, gratuit et accessible à tous. Vous pouvez auditer le code en toute transparence pour valider le modèle de sécurité, compiler l'application vous-même, ou télécharger directement les versions prêtes à l'emploi (Windows, macOS, Linux) depuis le **[site web]()**.
+RootPass est un projet 100 % open source, gratuit et accessible à tous. Vous pouvez auditer le code en toute transparence pour valider le modèle de sécurité, compiler l'application vous-même, ou télécharger directement les versions prêtes à l'emploi (Windows, macOS, Linux) depuis le **[site web](https://root-pass-website.vercel.app/)**.
 
 ## Contribuer
 
