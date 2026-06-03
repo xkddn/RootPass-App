@@ -66,6 +66,9 @@ RootPass est un projet 100 % open source, gratuit et accessible à tous. Vous po
 
 Les signalements de bugs et demandes de fonctionnalités passent par [GitHub Issues](https://github.com/xkddn/RootPass-App/issues).
 
+## Téléchargements
+![Téléchargements](https://img.shields.io/github/downloads/xkddn/RootPass-App/total?style=flat-square&color=10B981&label=Téléchargements)
+
 ## Licence
 
 [MIT](LICENSE) - © 2026 xkddn
