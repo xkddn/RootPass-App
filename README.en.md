@@ -66,6 +66,9 @@ RootPass is 100% open source and free. You can audit the code to verify the secu
 
 Bug reports and feature requests go through [GitHub Issues](https://github.com/xkddn/RootPass-App/issues).
 
+## Downloads
+![Downloads](https://img.shields.io/github/downloads/xkddn/RootPass-App/total?style=flat-square&color=10B981&label=Téléchargements)
+
 ## License
 
 [MIT](LICENSE) - © 2026 xkddn
