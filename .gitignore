@@ -19,5 +19,6 @@ coverage
 CLAUDE.md
 skills-lock.json
 
-# Release files (guide interne, ne pas publier)
+# MD files
 RELEASE.md
+PUSH.md
