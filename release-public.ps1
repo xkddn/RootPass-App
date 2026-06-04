@@ -1,16 +1,3 @@
-# =============================================================================
-#  release-public.ps1 — Pousse un snapshot NETTOYÉ vers le repo public
-#  (RootPass-App), c.-à-d. sans tes fichiers perso (.claude, .agents, mémos .md…).
-#
-#  Ton repo perso "origin" (RootPass) garde TOUT. Seul "public" est filtré.
-#
-#  Usage :
-#     .\release-public.ps1 v1.0.3
-#
-#  Ce script REMPLACE l'étape "git push public main --tags" de PUSH.md.
-#  Le push vers origin (bouton Sync de VSCode) ne change pas.
-# =============================================================================
-
 param(
     [Parameter(Mandatory = $true)]
     [string]$Tag
@@ -43,7 +30,7 @@ git checkout public-snapshot
 # 3. On retire les fichiers perso de CE commit uniquement.
 #    (--cached = on les sort de Git, mais ils restent sur le disque)
 git rm -r --cached --ignore-unmatch $private | Out-Null
-git commit -m "Release $Tag"
+git commit -m "$Tag"
 
 # 4. Tag + push du snapshot propre vers public/main.
 git tag -f $Tag

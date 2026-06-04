@@ -1,127 +1,34 @@
-# 🛠️ Setup d'un nouveau PC — RootPass
+# 🛠️ Setup sur un nouveau PC
 
-Procédure pour avoir le projet qui tourne **exactement** comme sur le PC principal,
-après un `git clone` tout neuf.
+## Prérequis (une fois par PC)
 
-> Pourquoi cette page existe : beaucoup de fichiers sont **gitignorés** (`node_modules`,
-> base de données, sorties de build, second remote git...). Un simple `clone` ne suffit
-> donc pas, il manque toujours des morceaux. Voici comment les recréer.
+- **Node.js** v24+ (npm 11+) — https://nodejs.org
+- **Git** récent — https://git-scm.com
 
----
+⚠️ `better-sqlite3` est un module natif (C++). Sur Windows, coche **« Tools for Native Modules »** dans l'installeur Node.js (ou installe les _Visual Studio Build Tools_ C++).
 
-## 0. Prérequis (à installer une fois par PC)
-
-| Outil       | Version sur le PC principal | Lien                         |
-| ----------- | --------------------------- | ---------------------------- |
-| **Node.js** | v24.11.1 (npm 11.6.2)       | https://nodejs.org (LTS récent) |
-| **Git**     | n'importe quelle version récente | https://git-scm.com      |
-
-> ⚠️ `better-sqlite3` est un module **natif** (C++). Il a besoin des outils de
-> compilation. Sur Windows, l'installeur Node.js propose une case
-> **« Automatically install the necessary tools / Tools for Native Modules »** :
-> coche-la. Sinon installe les *Visual Studio Build Tools* (C++).
-
----
-
-## 1. Cloner le repo
+## Étapes
 
 ```powershell
 git clone https://github.com/xkddn/RootPass.git
 cd RootPass
-```
-
----
-
-## 2. Rajouter le second remote `public`  ⭐ (le piège du clone)
-
-Un clone ne récupère **que** `origin`. Le remote `public` (le repo des releases,
-`RootPass-App`) n'existe pas tant que tu ne le rajoutes pas à la main :
-
-```powershell
-git remote add public https://github.com/xkddn/RootPass-App.git
-git fetch public
-```
-
-Vérification (tu dois voir `origin` **et** `public`) :
-
-```powershell
-git remote -v
-```
-
-> 📄 Pour savoir quoi pousser où, voir **PUSH.md** et **RELEASE.md** (workflow des
-> deux dépôts). Ces mémos sont suivis sur `origin`, donc ils sont déjà dans ton clone. 👍
-
----
-
-## 3. Installer les dépendances
-
-```powershell
-npm install
-```
-
-Le `postinstall` (`electron-builder install-app-deps`) recompile automatiquement
-`better-sqlite3` pour la version d'Electron du projet. 
-
-**Si au lancement tu as une erreur du genre `NODE_MODULE_VERSION mismatch` /
-`Error loading better-sqlite3`**, force le rebuild natif :
-
-```powershell
-npm run dev:rebuild
-```
-
----
-
-## 4. Lancer en dev
-
-```powershell
+git remote add public https://github.com/xkddn/RootPass-App.git   # remote des releases, non cloné
+git fetch public                                                  # telecharge l'histo du public
+npm install                                                       # postinstall recompile better-sqlite3
 npm run dev
 ```
 
-L'app s'ouvre avec HMR + DevTools. Au **premier lancement**, il n'y a pas de base de
-données : c'est normal, RootPass affiche l'écran **« créer le mot de passe maître »**
-et crée `vault_V2.db` tout seul dans le dossier `userData`.
+- **Vérifier les remotes** : `git remote -v` doit lister `origin` **et** `public`.
+- **Erreur `NODE_MODULE_VERSION` / `Error loading better-sqlite3`** → `npm run dev:rebuild`.
 
----
+## Fichiers absents (normal, gitignorés)
 
-## 5. À savoir sur les fichiers absents (c'est normal)
-
-Tout ce qui suit est **gitignoré** : ça n'est jamais cloné, et c'est voulu.
-
-| Fichier / dossier        | Pourquoi absent           | Comment le récupérer                       |
-| ------------------------ | ------------------------- | ------------------------------------------ |
-| `node_modules/`              | dépendances               | `npm install` (étape 3)                |
-| `out/`, `dist/`              | sorties de build          | `npm run build` / `npm run build:win`  |
-| `*.db`, `*.sqlite`          | **ton coffre local**      | recréé au 1er lancement (vide)         |
-| `.env`                      | (le projet n'en utilise pas) | rien à faire                        |
-| `coverage/`                 | rapport de tests          | `npm run test:coverage`                |
-| `.claude/settings.local.json` | config IA machine-locale | recréé par Claude Code si besoin      |
-
-> ✅ **Tes mémos et ta config IA sont maintenant suivis sur `origin`** : `PUSH.md`,
-> `RELEASE.md`, `SETUP.md`, `CLAUDE.md`, `.claude/` (commands + skills), `.agents/` et
-> `skills-lock.json` arrivent **directement avec le clone**. Plus besoin de les recopier
-> à la main d'un PC à l'autre. (Seul `.claude/settings.local.json` reste local à chaque
-> machine.)
-
-> 🔐 **Ton coffre (mots de passe) ne se synchronise PAS via Git.** La base est
-> chiffrée et locale à chaque machine. Chaque PC a donc son propre coffre. Pour
-> transférer tes données d'un PC à l'autre, utilise l'export/import de l'app (pas Git).
-
----
-
-## 6. Récap express (copier-coller)
-
-```powershell
-git clone https://github.com/xkddn/RootPass.git
-cd RootPass
-git remote add public https://github.com/xkddn/RootPass-App.git
-git fetch public
-npm install
-npm run dev
-```
-
-Si erreur native better-sqlite3 → `npm run dev:rebuild`.
-
----
+| Fichier / dossier             | Comment le récupérer                  |
+| ----------------------------- | ------------------------------------- |
+| `node_modules/`               | `npm install`                         |
+| `out/`, `dist/`               | `npm run build` / `npm run build:win` |
+| `*.db`, `*.sqlite`            | recréé au 1er lancement (vide)        |
+| `.claude/settings.local.json` | recréé par Claude Code si besoin      |
 
 ## Commandes utiles
 
@@ -132,5 +39,5 @@ npm run start      # preview d'un build de prod
 npm run lint       # ESLint
 npm run format     # Prettier
 npm run build:win  # installeur Windows (.exe)
-npm test           # lance les tests
 ```
+
