@@ -9,10 +9,12 @@ import './i18n/i18n'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import SpotlightWindow from './components/SpotlightWindow'
+
+const Root = window.api?.isSpotlightWindow ? SpotlightWindow : App
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <Root />
   </StrictMode>
 )
-

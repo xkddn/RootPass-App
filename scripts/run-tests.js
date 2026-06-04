@@ -18,4 +18,3 @@ try {
 }
 
 process.exit(exitCode)
-

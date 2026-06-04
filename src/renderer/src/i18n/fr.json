@@ -101,7 +101,8 @@
       "ready": "Prêt",
       "resultCount_one": "{{count}} résultat",
       "resultCount_other": "{{count}} résultats",
-      "escToClose": "ESC pour fermer"
+      "escToClose": "ESC pour fermer",
+      "addAccount": "Ajouter un compte"
     },
     "accountForm": {
       "addTitle": "Nouveau compte",

@@ -84,4 +84,3 @@ git push origin main
 - Actions : https://github.com/xkddn/RootPass-App/actions
 - Releases : https://github.com/xkddn/RootPass-App/releases
 - Lien de téléchargement (toujours à jour) : https://github.com/xkddn/RootPass-App/releases/latest
-

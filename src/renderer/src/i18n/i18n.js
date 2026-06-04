@@ -26,4 +26,3 @@ if (typeof window !== 'undefined' && window.api?.getLocale) {
 }
 
 export default i18n
-

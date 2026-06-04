@@ -40,4 +40,3 @@ npm run lint       # ESLint
 npm run format     # Prettier
 npm run build:win  # installeur Windows (.exe)
 ```
-

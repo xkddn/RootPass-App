@@ -23,6 +23,10 @@ export function lockVault() {
   activeKey = null
 }
 
+export function isVaultUnlocked() {
+  return activeKey !== null
+}
+
 export function isVaultInitialized() {
   const row = getDb().prepare('SELECT id FROM master_check WHERE id = 1').get()
   return !!row

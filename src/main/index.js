@@ -27,7 +27,13 @@ import {
   importEncryptedVault
 } from './accounts.js'
 import { openDatabase, getCurrentDbPath, getDefaultDbPath, closeDatabase } from './database.js'
-import { lockVault, isVaultInitialized, setupMasterPassword, verifyMasterPassword } from './auth.js'
+import {
+  lockVault,
+  isVaultInitialized,
+  isVaultUnlocked,
+  setupMasterPassword,
+  verifyMasterPassword
+} from './auth.js'
 import {
   writeLockFile,
   removeLockFile,
@@ -41,8 +47,8 @@ const DB_FILENAME = 'vault_V2.db'
 
 let tray = null
 let mainWindow = null
+let spotlightWindow = null
 let isQuitting = false
-let isSpotlightActive = false
 let currentShortcut = 'CommandOrControl+Shift+P'
 let currentLocale = 'fr'
 
@@ -68,11 +74,6 @@ function createWindow() {
   mainWindow.on('close', async (event) => {
     if (!isQuitting) {
       event.preventDefault()
-
-      if (isSpotlightActive) {
-        mainWindow.hide()
-        return
-      }
 
       const prefsPath = join(app.getPath('userData'), 'preferences.json')
       let hideWarning = false
@@ -141,33 +142,68 @@ function createWindow() {
 }
 
 const DEFAULT_SHORTCUT = 'CommandOrControl+Shift+P'
-const SPOTLIGHT_WIDTH = 690
-const SPOTLIGHT_MIN_HEIGHT = 400
-const SPOTLIGHT_MAX_HEIGHT = 520
+const SPOTLIGHT_WIDTH = 730
+const SPOTLIGHT_BASE_HEIGHT = 240
+const SPOTLIGHT_MAX_HEIGHT = 560
 
-function showAsSpotlight() {
-  mainWindow.setMenuBarVisibility(false)
+function createSpotlightWindow() {
+  spotlightWindow = new BrowserWindow({
+    width: SPOTLIGHT_WIDTH,
+    height: SPOTLIGHT_BASE_HEIGHT,
+    show: false,
+    frame: false,
+    resizable: false,
+    alwaysOnTop: true,
+    skipTaskbar: true,
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: true
+    }
+  })
+
+  spotlightWindow.on('blur', () => {
+    spotlightWindow.hide()
+  })
+
+  spotlightWindow.on('closed', () => {
+    spotlightWindow = null
+  })
+
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    spotlightWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '?spotlight=1')
+  } else {
+    spotlightWindow.loadFile(join(__dirname, '../renderer/index.html'), {
+      query: { spotlight: '1' }
+    })
+  }
+}
+
+function showSpotlight() {
+  if (!spotlightWindow) createSpotlightWindow()
   const { workArea } = screen.getPrimaryDisplay()
   const x = Math.round(workArea.x + (workArea.width - SPOTLIGHT_WIDTH) / 2)
   const y = Math.round(workArea.y + workArea.height * 0.18)
-  mainWindow.setBounds({ x, y, width: SPOTLIGHT_WIDTH, height: SPOTLIGHT_MIN_HEIGHT })
-  mainWindow.show()
-  mainWindow.focus()
-  mainWindow.webContents.send('toggle-spotlight', true)
+  spotlightWindow.setPosition(x, y)
+  spotlightWindow.setBounds({ x, y, width: SPOTLIGHT_WIDTH, height: SPOTLIGHT_BASE_HEIGHT })
+  spotlightWindow.show()
+  spotlightWindow.focus()
+  spotlightWindow.webContents.send('spotlight-show')
 }
 
 function toggleSpotlight() {
-  if (mainWindow.isVisible()) {
-    isSpotlightActive = false
-    mainWindow.hide()
-  } else {
-    isSpotlightActive = true
-    if (mainWindow.isFullScreen()) {
-      mainWindow.once('leave-full-screen', showAsSpotlight)
-      mainWindow.setFullScreen(false)
-    } else {
-      showAsSpotlight()
+  if (!isVaultUnlocked()) {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.show()
+      mainWindow.focus()
     }
+    return
+  }
+
+  if (spotlightWindow && spotlightWindow.isVisible()) {
+    spotlightWindow.hide()
+  } else {
+    showSpotlight()
   }
 }
 
@@ -180,7 +216,22 @@ function registerSpotlightShortcut() {
   }
 }
 
+const gotLock = app.requestSingleInstanceLock()
+
+if (!gotLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.show()
+      mainWindow.focus()
+    }
+  })
+}
+
 app.whenReady().then(() => {
+  Menu.setApplicationMenu(null)
   electronApp.setAppUserModelId('com.xkddn.rootpass')
 
   const prefsPath = join(app.getPath('userData'), 'preferences.json')
@@ -441,15 +492,24 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle('spotlight:hide', () => {
-    isSpotlightActive = false
-    mainWindow.hide()
+    if (spotlightWindow) spotlightWindow.hide()
     return true
   })
   ipcMain.handle('spotlight:resize', (_event, height) => {
-    if (!isSpotlightActive || !mainWindow) return false
-    const h = Math.max(SPOTLIGHT_MIN_HEIGHT, Math.min(SPOTLIGHT_MAX_HEIGHT, Math.round(height)))
-    const { x, y } = mainWindow.getBounds()
-    mainWindow.setBounds({ x, y, width: SPOTLIGHT_WIDTH, height: h }, false)
+    if (!spotlightWindow) return false
+    const h = Math.max(SPOTLIGHT_BASE_HEIGHT, Math.min(SPOTLIGHT_MAX_HEIGHT, Math.round(height)))
+    const { x, y } = spotlightWindow.getBounds()
+    spotlightWindow.setBounds({ x, y, width: SPOTLIGHT_WIDTH, height: h }, false)
+    return true
+  })
+  ipcMain.handle('spotlight:openAddAccount', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.show()
+      mainWindow.focus()
+      mainWindow.webContents.send('open-add-account')
+    }
+    if (spotlightWindow) spotlightWindow.hide()
     return true
   })
 
@@ -464,10 +524,8 @@ app.whenReady().then(() => {
   })
 
   const triggerLock = () => {
-    if (mainWindow) {
-      mainWindow.webContents.send('system-lock')
-      if (isSpotlightActive) mainWindow.hide()
-    }
+    if (mainWindow) mainWindow.webContents.send('system-lock')
+    if (spotlightWindow) spotlightWindow.hide()
   }
 
   powerMonitor.on('lock-screen', triggerLock)
@@ -517,13 +575,12 @@ app.whenReady().then(() => {
     {
       label: mt('trayOpen'),
       click: () => {
-        isSpotlightActive = false
-        mainWindow.setFullScreen(false)
+        if (mainWindow.isFullScreen()) mainWindow.setFullScreen(false)
         mainWindow.setSize(1300, 730)
         mainWindow.setMenuBarVisibility(true)
         mainWindow.center()
         mainWindow.show()
-        mainWindow.webContents.send('toggle-spotlight', false)
+        mainWindow.focus()
       }
     },
     { type: 'separator' },

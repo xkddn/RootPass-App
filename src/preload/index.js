@@ -17,13 +17,18 @@ const api = {
   exportAccounts: () => ipcRenderer.invoke('accounts:export'),
   exportEncrypted: (password) => ipcRenderer.invoke('vault:export-encrypted', password),
   importEncrypted: (password) => ipcRenderer.invoke('vault:import-encrypted', password),
-  onToggleSpotlight: (callback) => {
-    const handler = (_event, isSpotlight) => callback(isSpotlight)
-    ipcRenderer.on('toggle-spotlight', handler)
-    return () => ipcRenderer.removeListener('toggle-spotlight', handler)
-  },
+  isSpotlightWindow: new URLSearchParams(window.location.search).get('spotlight') === '1',
   hideSpotlight: () => ipcRenderer.invoke('spotlight:hide'),
   resizeSpotlight: (height) => ipcRenderer.invoke('spotlight:resize', height),
+  openAddAccountFromSpotlight: () => ipcRenderer.invoke('spotlight:openAddAccount'),
+  onSpotlightShow: (callback) => {
+    ipcRenderer.on('spotlight-show', callback)
+    return () => ipcRenderer.removeListener('spotlight-show', callback)
+  },
+  onOpenAddAccount: (callback) => {
+    ipcRenderer.on('open-add-account', callback)
+    return () => ipcRenderer.removeListener('open-add-account', callback)
+  },
   getShortcut: () => ipcRenderer.invoke('get-shortcut'),
   setShortcut: (shortcut) => ipcRenderer.invoke('set-shortcut', shortcut),
   getAutoStart: () => ipcRenderer.invoke('get-autostart'),

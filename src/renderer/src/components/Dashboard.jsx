@@ -102,7 +102,6 @@ function Dashboard({ onLogout }) {
   const [editingAccount, setEditingAccount] = useState(null)
   const [copiedId, setCopiedId] = useState(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState(null)
-  const [isSpotlightMode, setIsSpotlightMode] = useState(false)
   const [autoLockTime, setAutoLockTime] = useState(15)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.innerWidth < 1024)
 
@@ -127,22 +126,9 @@ function Dashboard({ onLogout }) {
   }, [])
 
   useEffect(() => {
-    const cleanup = window.api.onToggleSpotlight?.((isSpotlight) => {
-      setIsSpotlightMode(isSpotlight)
-      setSearchQuery('')
-    })
+    const cleanup = window.api.onOpenAddAccount?.(() => setIsAddModalOpen(true))
     return cleanup
   }, [])
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && isSpotlightMode) {
-        window.close()
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isSpotlightMode])
 
   useEffect(() => {
     const handleResize = () => setSidebarCollapsed(window.innerWidth < 1024)
@@ -266,175 +252,6 @@ function Dashboard({ onLogout }) {
   const hasCustomFields = filteredAccounts.some((a) => a.custom_fields?.length > 0)
   const hasUrl = filteredAccounts.some((a) => a.url)
   const hasTotp = filteredAccounts.some((a) => a.totp_secret)
-
-  const spotlightResultCount = filteredAccounts.length
-
-  useEffect(() => {
-    if (!isSpotlightMode) return
-    const SPOTLIGHT_DEFAULT_HEIGHT = 200
-    const SPOTLIGHT_MAX_HEIGHT = 520
-    const SPOTLIGHT_HEADER_HEIGHT = 76
-    const SPOTLIGHT_FOOTER_HEIGHT = 30
-    const SPOTLIGHT_LIST_PADDING = 10
-    const SPOTLIGHT_ROW_HEIGHT = 52
-    const SPOTLIGHT_ROW_GAP = 8
-    const visibleRows = Math.min(spotlightResultCount, 6)
-
-    if (searchQuery === '' || spotlightResultCount === 0) {
-      window.api.resizeSpotlight?.(SPOTLIGHT_DEFAULT_HEIGHT)
-      return
-    }
-
-    const desiredHeight =
-      SPOTLIGHT_HEADER_HEIGHT +
-      SPOTLIGHT_FOOTER_HEIGHT +
-      SPOTLIGHT_LIST_PADDING +
-      visibleRows * SPOTLIGHT_ROW_HEIGHT +
-      Math.max(0, visibleRows - 1) * SPOTLIGHT_ROW_GAP
-
-    window.api.resizeSpotlight?.(
-      Math.min(SPOTLIGHT_MAX_HEIGHT, Math.max(SPOTLIGHT_DEFAULT_HEIGHT, desiredHeight))
-    )
-  }, [isSpotlightMode, searchQuery, spotlightResultCount])
-
-  if (isSpotlightMode) {
-    return (
-      <div className="relative flex h-screen w-full flex-col overflow-hidden bg-[#08080A] font-sans text-zinc-200 selection:bg-emerald-500/30 animate-in fade-in duration-150">
-        <div className="pointer-events-none absolute -left-40 -top-40 size-96 rounded-full bg-emerald-500/10 blur-[120px]" />
-        <div className="pointer-events-none absolute -bottom-32 right-[-4rem] size-80 rounded-full bg-sky-500/5 blur-[100px]" />
-
-        <div className="relative z-10 flex shrink-0 items-center justify-between border-b border-white/6 bg-white/[0.03] px-4 py-3 backdrop-blur-xl">
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 shadow-lg shadow-emerald-500/10">
-              <ShieldCheck className="size-5 text-emerald-400" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-400/80">
-                {t('spotlight.quickSearch')}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative z-10 border-b border-white/6 px-3 py-3">
-          <div className="relative rounded-2xl border border-white/6 bg-white/[0.03] px-4 py-3 shadow-2xl shadow-black/30 ring-1 ring-inset ring-white/[0.03] backdrop-blur-xl">
-            <Search className="pointer-events-none absolute left-4 top-1/2 size-4.5 -translate-y-1/2 text-zinc-500" />
-            <input
-              type="text"
-              placeholder={t('spotlight.searchPlaceholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              autoFocus
-              className="h-full w-full bg-transparent pl-10 pr-2 text-[15px] font-medium text-white placeholder:text-zinc-600 focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <div className="custom-scrollbar relative z-10 flex-1 overflow-y-auto px-3 py-2">
-          {searchQuery === '' ? (
-            <div className="flex h-full items-center justify-center px-3">
-              <div className="max-w-sm rounded-2xl border border-white/6 bg-white/[0.02] px-5 py-4 text-center shadow-2xl shadow-black/30">
-                <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-2xl border border-white/6 bg-white/[0.03] text-emerald-400">
-                  <Search className="size-5" />
-                </div>
-                <p className="text-sm font-semibold text-white">{t('spotlight.typeToSearch')}</p>
-              </div>
-            </div>
-          ) : filteredAccounts.length === 0 ? (
-            <div className="flex h-full items-center justify-center px-3">
-              <div className="max-w-sm rounded-2xl border border-white/6 bg-white/[0.02] px-5 py-4 text-center shadow-2xl shadow-black/30">
-                <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-2xl border border-white/6 bg-white/[0.03] text-zinc-400">
-                  <ShieldCheck className="size-5" />
-                </div>
-                <p className="text-sm font-semibold text-white">{t('spotlight.noResults')}</p>
-                <p className="mt-1 text-[11px] leading-5 text-zinc-500">
-                  {t('spotlight.noResultsHint')}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {filteredAccounts.map((account) => {
-                const Icon = (CATEGORY_META[account.category] || CATEGORY_META.Autres).icon
-                return (
-                  <div
-                    key={account.id}
-                    className="group flex min-h-13 items-center gap-3 rounded-2xl border border-white/6 bg-white/[0.03] px-3 py-2.5 shadow-lg shadow-black/15 transition-all duration-150 hover:border-emerald-500/20 hover:bg-white/[0.05] hover:shadow-black/25"
-                  >
-                    <div className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/6 bg-black/20 text-zinc-400 shadow-inner shadow-black/30">
-                      <div
-                        className={`absolute inset-0 opacity-15 ${CATEGORY_META[account.category]?.dot || 'bg-zinc-500'}`}
-                      />
-                      <Icon className="relative z-10 size-4.5" />
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="truncate text-[13px] font-semibold tracking-tight text-white">
-                          {account.title}
-                        </span>
-                        {!!account.is_favorite && (
-                          <Star className="size-3.5 shrink-0 fill-amber-400 text-amber-400" />
-                        )}
-                      </div>
-                      <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-zinc-500">
-                        <span className="truncate font-mono text-zinc-400">
-                          {account.login || '—'}
-                        </span>
-                        <span className="size-1 rounded-full bg-zinc-700" aria-hidden="true" />
-                        <span
-                          className={`inline-flex items-center rounded-full border border-white/6 px-2 py-0.5 font-medium text-zinc-400`}
-                        >
-                          {t(`categories.${account.category || 'Autres'}`)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex shrink-0 items-center gap-1.5">
-                      <button
-                        onClick={() => handleCopy(account.login, `spot-log-${account.id}`)}
-                        title={t('dashboard.copyUser')}
-                        className="flex size-8 items-center justify-center rounded-xl border border-white/6 bg-black/25 text-zinc-400 transition-colors hover:border-white/10 hover:bg-white/[0.06] hover:text-white"
-                      >
-                        {copiedId === `spot-log-${account.id}` ? (
-                          <Check className="size-4 text-emerald-400" />
-                        ) : (
-                          <Copy className="size-4" />
-                        )}
-                      </button>
-
-                      <button
-                        onClick={() => handleCopy(account.password, `spot-pass-${account.id}`)}
-                        title={t('dashboard.copyPass')}
-                        className="inline-flex h-8 items-center justify-center gap-1.5 rounded-xl bg-emerald-500 px-3.5 text-[11px] font-semibold text-zinc-950 shadow-lg shadow-emerald-500/15 transition-all hover:-translate-y-px hover:bg-emerald-400"
-                      >
-                        {copiedId === `spot-pass-${account.id}` ? (
-                          <Check className="size-4" />
-                        ) : (
-                          <Key className="size-3.5 opacity-70" />
-                        )}
-                        <span>{t('common.copy')}</span>
-                      </button>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )}
-        </div>
-
-        <div className="relative z-10 flex h-7 shrink-0 items-center justify-between border-t border-white/6 bg-black/30 px-4 font-mono text-[10px] text-zinc-600 backdrop-blur-xl">
-          <span className="flex items-center gap-2">
-            <span className="size-1.5 rounded-full bg-emerald-400/70" aria-hidden="true" />
-            {searchQuery !== '' && filteredAccounts.length > 0
-              ? t('spotlight.resultCount', { count: filteredAccounts.length })
-              : t('spotlight.ready')}
-          </span>
-          <span className="text-zinc-700">{t('spotlight.escToClose')}</span>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div
