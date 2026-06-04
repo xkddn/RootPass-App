@@ -14,6 +14,14 @@ Mémo pour s'y retrouver entre les deux dépôts.
 **On ne modifie JAMAIS rien directement sur GitHub.**
 Tout part du local → `origin`. Le `public` ne reçoit que des snapshots au moment des releases.
 
+## 📂 Fichiers perso (synchronisés sur `origin` uniquement)
+
+Mes fichiers perso — `.claude`, `.agents`, `skills-lock.json`, et les mémos `PUSH.md`,
+`RELEASE.md`, `SETUP.md`, `CLAUDE.md` — sont **suivis sur `origin`** pour les retrouver
+sur tous mes PC après un `git pull`. Ils sont **retirés automatiquement du repo public**
+par `release-public.ps1`. (Seuls `.claude/settings.local.json` et les credentials restent
+hors de Git car spécifiques à la machine — cf. `.gitignore`.)
+
 ---
 
 ## Au quotidien (dev, features, fix README, etc.)
@@ -58,17 +66,21 @@ git push origin main
 ## Rappel express
 
 - **Récupérer ce qui est sur public → ici** : `git pull public main`
-- **À l'avenir sur public** : seulement les releases (`git push public main --tags` + Release GitHub)
+- **À l'avenir sur public** : seulement les releases (`.\release-public.ps1 vX.X.X` + Release GitHub)
 - **Réflexe normal** : push sur `origin` (bouton VSCode)
 - **Jamais** d'édition directe sur GitHub
 
 ---
 
-## ⚠️ État à finir (au 2026-06-03)
+## ⚠️ À faire une fois (mise en place du suivi des fichiers perso)
 
-Les 4 commits README ont été rapatriés en local (`git pull public main` ✅).
-Il reste à les pousser sur `origin` pour tout aligner :
+Depuis le 2026-06-04, mes fichiers perso sont suivis sur `origin` (voir section
+« Fichiers perso » plus haut). Pour activer ça la première fois :
 
 ```powershell
+git add .
+git commit -m "Sync fichiers perso sur origin + script release public"
 git push origin main
 ```
+
+Ensuite, sur chaque autre PC, un simple `git pull origin main` ramène tout d'un coup.

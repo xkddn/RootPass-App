@@ -48,8 +48,8 @@ Vérification (tu dois voir `origin` **et** `public`) :
 git remote -v
 ```
 
-> 📄 Pour savoir quoi pousser où, voir **PUSH.md** (workflow des deux dépôts).
-> Ce fichier est gitignoré → il n'est présent que sur le PC où il a été créé.
+> 📄 Pour savoir quoi pousser où, voir **PUSH.md** et **RELEASE.md** (workflow des
+> deux dépôts). Ces mémos sont suivis sur `origin`, donc ils sont déjà dans ton clone. 👍
 
 ---
 
@@ -89,13 +89,18 @@ Tout ce qui suit est **gitignoré** : ça n'est jamais cloné, et c'est voulu.
 
 | Fichier / dossier        | Pourquoi absent           | Comment le récupérer                       |
 | ------------------------ | ------------------------- | ------------------------------------------ |
-| `node_modules/`          | dépendances               | `npm install` (étape 3)                    |
-| `out/`, `dist/`          | sorties de build          | `npm run build` / `npm run build:win`      |
-| `*.db`, `*.sqlite`       | **ton coffre local**      | recréé au 1er lancement (vide)             |
-| `.env`                   | (le projet n'en utilise pas) | rien à faire                            |
-| `RELEASE.md`, `PUSH.md`  | mémos perso               | présents seulement sur le PC d'origine     |
-| `.claude`, `CLAUDE.md`   | config IA                 | non nécessaire pour faire tourner l'app    |
-| `coverage/`              | rapport de tests          | `npm run test:coverage`                    |
+| `node_modules/`              | dépendances               | `npm install` (étape 3)                |
+| `out/`, `dist/`              | sorties de build          | `npm run build` / `npm run build:win`  |
+| `*.db`, `*.sqlite`          | **ton coffre local**      | recréé au 1er lancement (vide)         |
+| `.env`                      | (le projet n'en utilise pas) | rien à faire                        |
+| `coverage/`                 | rapport de tests          | `npm run test:coverage`                |
+| `.claude/settings.local.json` | config IA machine-locale | recréé par Claude Code si besoin      |
+
+> ✅ **Tes mémos et ta config IA sont maintenant suivis sur `origin`** : `PUSH.md`,
+> `RELEASE.md`, `SETUP.md`, `CLAUDE.md`, `.claude/` (commands + skills), `.agents/` et
+> `skills-lock.json` arrivent **directement avec le clone**. Plus besoin de les recopier
+> à la main d'un PC à l'autre. (Seul `.claude/settings.local.json` reste local à chaque
+> machine.)
 
 > 🔐 **Ton coffre (mots de passe) ne se synchronise PAS via Git.** La base est
 > chiffrée et locale à chaque machine. Chaque PC a donc son propre coffre. Pour

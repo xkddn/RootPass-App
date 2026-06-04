@@ -34,11 +34,14 @@ git push origin main
 ```powershell
 npm version patch                 # bump 1.0.1 -> 1.0.2 (modifie package.json, commit + tag auto)
 
-git push origin main --tags       # sauvegarde sur le privé (code + tag)
-git push public main --tags       # PUSH DU TAG SUR PUBLIC = déclenche le robot
+git push origin main --tags       # sauvegarde sur le privé (code + tag + fichiers perso)
+.\release-public.ps1 v1.0.2       # PUBLIC : snapshot nettoyé + tag = déclenche le robot
 ```
 
-> `--tags` est le point clé : c'est le push du tag `vX.X.X` sur **public** qui lance le build.
+> ⚠️ On n'utilise **plus** `git push public main --tags` : ça enverrait tes fichiers
+> perso (`.claude`, `.agents`, mémos `.md`…) sur le repo public.
+> `release-public.ps1` pousse une version nettoyée **et** le tag sur public — c'est
+> ce push du tag qui lance le build, exactement comme avant.
 
 ### 3. Surveiller et publier
 
@@ -55,7 +58,7 @@ git push public main --tags       # PUSH DU TAG SUR PUBLIC = déclenche le robot
 ```powershell
 npm version patch
 git push origin main --tags
-git push public main --tags
+.\release-public.ps1 v1.0.2
 # → Actions (attendre ✅) → Releases → Publish release
 ```
 
@@ -108,7 +111,7 @@ Format `MAJEUR.MINEUR.CORRECTIF` (ex. `1.4.2`) :
 
 | Souci                            | Solution                                                          |
 | -------------------------------- | ----------------------------------------------------------------- |
-| Le robot ne démarre pas          | Tag pas poussé sur public → `git push public main --tags`         |
+| Le robot ne démarre pas          | Tag pas poussé sur public → relance `.\release-public.ps1 vX.X.X` |
 | Erreur 403 dans Actions          | Active *Read and write permissions* (config initiale)             |
 | Le job `publish` ne part pas     | Normal : il attend que les 3 builds soient finis                  |
 | Users reçoivent rien             | Release restée en *draft*, ou version pas bumpée                  |
