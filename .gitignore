@@ -13,12 +13,9 @@ out
 # Test output
 coverage
 
-# AI tools
-.agents
-.claude
-CLAUDE.md
-skills-lock.json
-
-# MD files
-RELEASE.md
-PUSH.md
+# AI tools & mémos perso
+# -> Suivis sur "origin" (repo perso RootPass) pour les retrouver sur tous mes PC.
+# -> Retirés automatiquement du repo "public" (RootPass-App) par release-public.ps1.
+# On garde quand même hors de Git les fichiers spécifiques à une machine :
+.claude/settings.local.json
+.claude/.credentials*
