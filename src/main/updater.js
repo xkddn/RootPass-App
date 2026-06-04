@@ -4,10 +4,6 @@ import { app, ipcMain } from 'electron'
 const { autoUpdater } = pkg
 
 /**
- * Initialise la mise à jour automatique (electron-updater).
- * Vérifie GitHub Releases (config `publish` de electron-builder.yml),
- * télécharge en arrière-plan et installe au redémarrage.
- *
  * @param {{ getWindow: () => import('electron').BrowserWindow | null, onBeforeInstall?: () => void }} opts
  */
 export function initAutoUpdater({ getWindow, onBeforeInstall }) {
@@ -48,11 +44,10 @@ export function initAutoUpdater({ getWindow, onBeforeInstall }) {
     return true
   })
 
-  // Vérification au démarrage uniquement sur l'app packagée
-  // (en dev il n'y a pas de app-update.yml, checkForUpdates lèverait une erreur).
   if (app.isPackaged) {
     autoUpdater.checkForUpdates().catch((e) => {
       console.error('Erreur vérification MAJ au démarrage :', e?.message || e)
     })
   }
 }
+

@@ -16,8 +16,6 @@ i18n.use(initReactI18next).init({
   }
 })
 
-// Charge la langue persistée (préférences côté main). Bascule après l'init si
-// l'utilisateur avait choisi une autre langue lors d'une session précédente.
 if (typeof window !== 'undefined' && window.api?.getLocale) {
   window.api
     .getLocale()
@@ -28,3 +26,4 @@ if (typeof window !== 'undefined' && window.api?.getLocale) {
 }
 
 export default i18n
+

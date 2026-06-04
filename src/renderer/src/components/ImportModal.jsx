@@ -3,11 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { X, ClipboardPaste, Download, Loader2, FileText, Braces } from 'lucide-react'
 
 /**
- * Parse un fichier texte au format :
- *   A-
- *   Airfrance : email / identifiant (optionnel) / mot de passe
- * Règles : les en-têtes de section (A-, B-...) et les lignes vides sont ignorés.
- * 1er champ = login, dernier = mot de passe, champs du milieu = champs perso "Info".
  * @param {string} text
  * @returns {Array<{ title: string, login: string, password: string, custom_fields: {label:string,value:string}[], category: string, url: string }>}
  */
@@ -18,7 +13,6 @@ function parseTxt(text) {
     const line = raw.trim()
     if (!line) continue
 
-    // En-tête de section : une lettre/chiffre suivi d'un tiret seul (A-, B -, 1-...)
     if (/^[\p{L}\p{N}]\s*-\s*$/u.test(line)) continue
 
     const colonIdx = line.indexOf(':')
@@ -58,7 +52,7 @@ function parseTxt(text) {
 /** @param {{ onClose: () => void, onSuccess: () => void }} props */
 function ImportModal({ onClose, onSuccess }) {
   const { t } = useTranslation()
-  const [mode, setMode] = useState('text') // 'text' | 'json'
+  const [mode, setMode] = useState('text')
   const [text, setText] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -257,3 +251,4 @@ function ImportModal({ onClose, onSuccess }) {
 }
 
 export default ImportModal
+

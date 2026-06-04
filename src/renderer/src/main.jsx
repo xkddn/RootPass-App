@@ -1,6 +1,3 @@
-// Imports CSS tiers via JS (et non via @import dans main.css) : Tailwind v4
-// avale les @import et casse la copie des assets (polices/drapeaux) au build.
-// Importés ici, Vite réécrit les url() et émet bien les fichiers .woff/.svg.
 import 'flag-icons/css/flag-icons.min.css'
 import '@fontsource/poppins/400.css'
 import '@fontsource/poppins/500.css'
@@ -18,3 +15,4 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>
 )
+
