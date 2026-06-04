@@ -143,14 +143,26 @@
       "strengthStrong": "Très fort"
     },
     "importModal": {
-      "title": "Importer du JSON",
+      "title": "Importer",
+      "tabJson": "JSON",
+      "tabText": "Fichier texte",
       "label": "Colle ou écris un tableau JSON de comptes",
+      "textLabel": "Colle le contenu de ton fichier .txt",
+      "textHint": "Une ligne par compte — Titre : email / identifiant (optionnel) / mot de passe. Les sections (A-, B-...) sont ignorées.",
       "paste": "Coller",
       "pasteTitle": "Coller depuis le presse-papier",
       "import": "Importer",
       "importing": "Importation...",
-      "emptyError": "Le champ est vide. Colle ou écris ton JSON.",
-      "notArrayError": "Format invalide. Assure-toi que c'est un tableau JSON valide."
+      "emptyError": "Le champ est vide. Colle ou écris ton contenu.",
+      "notArrayError": "Format invalide. Assure-toi que c'est un tableau JSON valide.",
+      "preview": "Aperçu",
+      "previewCount_one": "{{count}} compte détecté",
+      "previewCount_other": "{{count}} comptes détectés",
+      "noEntries": "Aucun compte détecté. Vérifie le format du fichier.",
+      "noLogin": "(pas de login)",
+      "fieldsBadge_one": "{{count}} champ perso",
+      "fieldsBadge_other": "{{count}} champs perso",
+      "importN": "Importer {{count}}"
     },
     "audit": {
       "eyebrow": "Audit de sécurité",

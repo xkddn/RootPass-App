@@ -31,7 +31,7 @@ import {
 import TotpBadge from './TotpBadge'
 import AddAccountModal from './AddAccountModal'
 import EditAccountModal from './EditAccountModal'
-import ImportJsonModal from './ImportJsonModal'
+import ImportModal from './ImportModal'
 import BrandLogo from './BrandLogo'
 import rootpassAppIcon from '../assets/rootpass-appicon.png'
 import Settings from './Settings'
@@ -917,7 +917,7 @@ function Dashboard({ onLogout }) {
         <AddAccountModal onClose={() => setIsAddModalOpen(false)} onSuccess={fetchAccounts} />
       )}
       {isImportModalOpen && (
-        <ImportJsonModal onClose={() => setIsImportModalOpen(false)} onSuccess={fetchAccounts} />
+        <ImportModal onClose={() => setIsImportModalOpen(false)} onSuccess={fetchAccounts} />
       )}
       {editingAccount && (
         <EditAccountModal

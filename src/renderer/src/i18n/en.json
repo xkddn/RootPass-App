@@ -143,14 +143,26 @@
       "strengthStrong": "Very strong"
     },
     "importModal": {
-      "title": "Import JSON",
+      "title": "Import",
+      "tabJson": "JSON",
+      "tabText": "Text file",
       "label": "Paste or type a JSON array of accounts",
+      "textLabel": "Paste the content of your .txt file",
+      "textHint": "One line per account — Title : email / username (optional) / password. Sections (A-, B-...) are ignored.",
       "paste": "Paste",
       "pasteTitle": "Paste from clipboard",
       "import": "Import",
       "importing": "Importing...",
-      "emptyError": "The field is empty. Paste or type your JSON.",
-      "notArrayError": "Invalid format. Make sure it's a valid JSON array."
+      "emptyError": "The field is empty. Paste or type your content.",
+      "notArrayError": "Invalid format. Make sure it's a valid JSON array.",
+      "preview": "Preview",
+      "previewCount_one": "{{count}} account detected",
+      "previewCount_other": "{{count}} accounts detected",
+      "noEntries": "No account detected. Check the file format.",
+      "noLogin": "(no login)",
+      "fieldsBadge_one": "{{count}} custom field",
+      "fieldsBadge_other": "{{count}} custom fields",
+      "importN": "Import {{count}}"
     },
     "audit": {
       "eyebrow": "Security audit",
