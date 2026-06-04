@@ -1,6 +1,6 @@
 {
   "name": "rootpass",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "RootPass - gestionnaire de mots de passe 100% local et chiffre",
   "main": "./out/main/index.js",
   "author": "xkddn",
