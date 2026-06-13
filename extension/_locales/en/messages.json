@@ -1,0 +1,31 @@
+{
+  "appName": { "message": "RootPass" },
+  "footLocal": { "message": "Everything stays local on your machine." },
+  "forget": { "message": "Forget" },
+  "connecting": { "message": "Connecting…" },
+  "pairIntro": {
+    "message": "Open RootPass, go to Settings → Browser extension, click \"Connect the extension\", then enter the code below."
+  },
+  "pairButton": { "message": "Pair" },
+  "pairing": { "message": "Pairing…" },
+  "errBadCode": { "message": "Wrong code." },
+  "errExpired": { "message": "Code expired. Generate a new one." },
+  "errPairFailed": { "message": "Pairing failed. Try again." },
+  "statusConnected": { "message": "Connected" },
+  "statusNotConnected": { "message": "Not connected" },
+  "statusOffline": { "message": "Offline" },
+  "statusLocked": { "message": "Locked" },
+  "lockedBody": { "message": "RootPass vault is locked. Unlock the app to continue." },
+  "appNotFound": { "message": "RootPass app not found. Launch RootPass then reopen this popup." },
+  "openSite": { "message": "Open a website to see your accounts." },
+  "searching": { "message": "Searching…" },
+  "notConnectedBody": { "message": "Not connected to RootPass." },
+  "noAccountsFor": { "message": "No account for" },
+  "contentLoading": { "message": "RootPass…" },
+  "contentLocked": { "message": "RootPass vault is locked. Unlock the app." },
+  "contentNotConnected": {
+    "message": "RootPass not connected. Open the app and pair the extension."
+  },
+  "contentNoAccounts": { "message": "No account for this site." },
+  "contentAccountsForSite": { "message": "Accounts for this site" }
+}
