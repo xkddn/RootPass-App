@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>RootPass</title>
+  </head>
+  <body>
+    <header class="head">
+      <div class="brand">
+        <img src="icons/icon-48.png" alt="" width="22" height="22" />
+        <span>RootPass</span>
+      </div>
+      <span id="status" class="status">…</span>
+    </header>
+
+    <main id="body" class="body">
+      <div class="loading">Connexion…</div>
+    </main>
+
+    <footer class="foot">
+      <span id="foot-text">Tout reste en local sur votre machine.</span>
+      <button id="revoke" class="link" hidden>Oublier</button>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

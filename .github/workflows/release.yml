@@ -1,0 +1,80 @@
+name: Release
+
+# Se déclenche automatiquement quand un tag de version (ex. v1.0.1) est poussé.
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Autorise le robot à créer/modifier des Releases dans le dépôt.
+permissions:
+  contents: write
+
+jobs:
+  # Étape 1 : build des installeurs sur chaque OS, SANS publier.
+  # Chaque OS dépose ses fichiers en "artifacts" temporaires du workflow.
+  build:
+    # IMPORTANT : ne build QUE depuis le dépôt public (là où vivent les Releases).
+    if: github.repository == 'xkddn/RootPass-App'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Compiler l'application
+        run: npm run build
+
+      - name: Builder les installeurs (sans publier)
+        run: npx electron-builder --publish never
+
+      - name: Déposer les installeurs en artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ matrix.os }}
+          if-no-files-found: ignore
+          path: |
+            dist/*.exe
+            dist/*.exe.blockmap
+            dist/*.dmg
+            dist/*.dmg.blockmap
+            dist/*.zip
+            dist/*.zip.blockmap
+            dist/*.AppImage
+            dist/*.deb
+            dist/latest*.yml
+
+  # Étape 2 : un SEUL job récupère tous les installeurs et crée UNE release.
+  publish:
+    needs: build
+    if: github.repository == 'xkddn/RootPass-App'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer tous les installeurs
+        uses: actions/download-artifact@v4
+        with:
+          path: installers
+          merge-multiple: true
+
+      - name: Créer la Release (brouillon) avec tous les fichiers
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create "$GITHUB_REF_NAME"
+          --repo "$GITHUB_REPOSITORY"
+          --draft
+          --title "$GITHUB_REF_NAME"
+          --notes "RootPass $GITHUB_REF_NAME"
+          $(find installers -type f)

@@ -1,0 +1,35 @@
+{
+  "appName": { "message": "RootPass" },
+  "footLocal": { "message": "Tout reste en local sur votre machine." },
+  "forget": { "message": "Oublier" },
+  "connecting": { "message": "Connexion…" },
+  "pairIntro": {
+    "message": "Ouvrez RootPass, allez dans Réglages → Extension navigateur, cliquez « Connecter l'extension », puis saisissez le code ci-dessous."
+  },
+  "pairButton": { "message": "Appairer" },
+  "pairing": { "message": "Appairage…" },
+  "errBadCode": { "message": "Code incorrect." },
+  "errExpired": { "message": "Code expiré. Générez-en un nouveau." },
+  "errPairFailed": { "message": "Échec de l'appairage. Réessayez." },
+  "statusConnected": { "message": "Connectée" },
+  "statusNotConnected": { "message": "Non connectée" },
+  "statusOffline": { "message": "Hors ligne" },
+  "statusLocked": { "message": "Verrouillé" },
+  "lockedBody": {
+    "message": "Coffre RootPass verrouillé. Déverrouillez l'application pour continuer."
+  },
+  "appNotFound": {
+    "message": "Application RootPass introuvable. Lancez RootPass puis rouvrez ce popup."
+  },
+  "openSite": { "message": "Ouvrez un site web pour voir vos comptes." },
+  "searching": { "message": "Recherche…" },
+  "notConnectedBody": { "message": "Non connecté à RootPass." },
+  "noAccountsFor": { "message": "Aucun compte pour" },
+  "contentLoading": { "message": "RootPass…" },
+  "contentLocked": { "message": "Coffre RootPass verrouillé. Déverrouillez l'application." },
+  "contentNotConnected": {
+    "message": "RootPass non connecté. Ouvrez l'application et appairez l'extension."
+  },
+  "contentNoAccounts": { "message": "Aucun compte pour ce site." },
+  "contentAccountsForSite": { "message": "Comptes pour ce site" }
+}
