@@ -491,7 +491,9 @@ app.whenReady().then(() => {
       return { error: 'invalid_file' }
     }
 
-    return importEncryptedVault(payload, password)
+    const result = await importEncryptedVault(payload, password)
+    sendAccountsChanged()
+    return result
   })
 
   ipcMain.handle('accounts:export', async () => {

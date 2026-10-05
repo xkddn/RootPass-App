@@ -94,6 +94,18 @@ const SEVEN_DAYS_AGO = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 
 const SORT_OPTIONS = ['az', 'za', 'recent', 'oldest', 'updated']
 
+const ALPHABET = ['#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
+
+function titleLetter(title) {
+  const first = (title || '')
+    .trim()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .charAt(0)
+    .toUpperCase()
+  return first >= 'A' && first <= 'Z' ? first : '#'
+}
+
 const SORT_COMPARATORS = {
   az: (a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }),
   za: (a, b) => b.title.localeCompare(a.title, undefined, { sensitivity: 'base' }),
@@ -147,6 +159,7 @@ function Dashboard({ onLogout }) {
   const sidebarCollapsed = false
   const drawerRef = useRef(null)
   const searchRef = useRef(null)
+  const listScrollRef = useRef(null)
   const [addingFolder, setAddingFolder] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
   const [extBridgeStatus, setExtBridgeStatus] = useState(null)
@@ -432,6 +445,18 @@ function Dashboard({ onLogout }) {
       return matchesSearch && matchesNav
     })
     .sort(SORT_COMPARATORS[sortBy] || SORT_COMPARATORS.az)
+
+  const showAlphabet = (sortBy === 'az' || sortBy === 'za') && filteredAccounts.length > 0
+  const availableLetters = new Set(filteredAccounts.map((a) => titleLetter(a.title)))
+
+  const scrollToLetter = (letter) => {
+    const container = listScrollRef.current
+    const row = container?.querySelector(`[data-letter="${letter}"]`)
+    if (!row) return
+    const top =
+      row.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop
+    container.scrollTo({ top: top - 8, behavior: 'smooth' })
+  }
 
   const hasCustomFields = filteredAccounts.some((a) => a.custom_fields?.length > 0)
   const hasUrl = filteredAccounts.some((a) => a.url)
@@ -953,7 +978,11 @@ function Dashboard({ onLogout }) {
             </header>
 
             <div className="flex flex-1 overflow-hidden">
-            <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+            <div className="relative flex min-w-0 flex-1">
+            <div
+              ref={listScrollRef}
+              className={`flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 ${showAlphabet ? 'pr-10 md:pr-11 lg:pr-12' : ''}`}
+            >
               {filteredAccounts.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
                   <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
@@ -1027,6 +1056,7 @@ function Dashboard({ onLogout }) {
                         <div
                           key={account.id}
                           role="listitem"
+                          data-letter={titleLetter(account.title)}
                           onClick={() => setSelectedAccountId(account.id)}
                           className={`group relative flex cursor-pointer items-center gap-5 rounded-xl px-4 py-4 transition-colors duration-150 animate-in fade-in slide-in-from-bottom-1 [animation-fill-mode:both] duration-200 ${
                             selectedAccountId === account.id
@@ -1288,6 +1318,35 @@ function Dashboard({ onLogout }) {
                   </div>
                 </div>
               )}
+            </div>
+
+            {showAlphabet && (
+              <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center py-3 md:right-3.5 lg:right-4">
+                <nav
+                  aria-label="A-Z"
+                  className="pointer-events-auto flex max-h-full flex-col items-center rounded-full border border-white/[0.05] bg-white/[0.02] px-0.5 py-1.5"
+                >
+                  {(sortBy === 'za' ? [...ALPHABET].reverse() : ALPHABET).map((letter) => {
+                    const enabled = availableLetters.has(letter)
+                    return (
+                      <button
+                        key={letter}
+                        onClick={() => scrollToLetter(letter)}
+                        disabled={!enabled}
+                        aria-label={letter}
+                        className={`flex h-[18px] min-h-0 w-[18px] shrink items-center justify-center rounded-full text-[10px] font-medium leading-none transition-colors ${FOCUS_RING} ${
+                          enabled
+                            ? 'text-zinc-500 hover:text-emerald-400'
+                            : 'cursor-default text-zinc-800'
+                        }`}
+                      >
+                        {letter}
+                      </button>
+                    )
+                  })}
+                </nav>
+              </div>
+            )}
             </div>
 
             {selectedAccount && (

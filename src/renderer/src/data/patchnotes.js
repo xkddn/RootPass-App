@@ -1,5 +1,29 @@
 export const PATCH_NOTES = [
   {
+    version: '1.4.4',
+    date: '2026-10-05',
+    fr: {
+      added: [
+        'Molette alphabétique sur le côté de la liste : cliquez sur une lettre pour aller directement aux comptes correspondants.'
+      ],
+      improved: [],
+      removed: [],
+      fixed: [
+        'Après l’import d’une sauvegarde chiffrée, vos comptes s’affichent immédiatement, sans avoir à relancer l’application.'
+      ]
+    },
+    en: {
+      added: [
+        'Alphabet wheel on the side of the list: click a letter to jump straight to the matching accounts.'
+      ],
+      improved: [],
+      removed: [],
+      fixed: [
+        'After importing an encrypted backup, your accounts show up right away, with no need to restart the app.'
+      ]
+    }
+  },
+  {
     version: '1.4.3',
     date: '2026-10-05',
     fr: {
