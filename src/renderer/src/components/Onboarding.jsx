@@ -638,7 +638,7 @@ function StepExtensionTuto({ onNext, onBack }) {
           </div>
 
           {code && remaining > 0 ? (
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <div className="flex gap-2">
                 {code.split('').map((d, i) => (
                   <span
@@ -658,7 +658,7 @@ function StepExtensionTuto({ onNext, onBack }) {
               </button>
               <button
                 onClick={fetchCode}
-                className={`ml-auto flex items-center gap-2 rounded-full border border-white/[0.07] bg-white/[0.04] px-4 py-2 text-[12px] font-medium text-zinc-300 transition-all hover:bg-white/[0.08] ${FOCUS_RING}`}
+                className={`ml-auto flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-white/[0.07] bg-white/[0.04] px-4 py-2 text-[12px] font-medium text-zinc-300 transition-all hover:bg-white/[0.08] ${FOCUS_RING}`}
               >
                 <RefreshCw className="size-3" />
                 {t('onboarding.extNewCode')}

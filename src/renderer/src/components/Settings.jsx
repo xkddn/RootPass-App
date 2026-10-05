@@ -37,9 +37,11 @@ import {
   ExternalLink,
   Lock,
   Eye,
-  EyeOff
+  EyeOff,
+  Trash2
 } from 'lucide-react'
 import CustomSelect from './CustomSelect'
+import ConfirmDialog from './ConfirmDialog'
 import { getStoredTheme, setTheme } from '../theme'
 import { PATCH_NOTES } from '../data/patchnotes'
 
@@ -1030,7 +1032,7 @@ function ExtensionTab() {
                 </span>
               </div>
               <p className="text-xs leading-relaxed text-zinc-400">{t('settings.extCodeDesc')}</p>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <div className="flex gap-2">
                   {code.split('').map((d, i) => (
                     <span
@@ -1054,7 +1056,7 @@ function ExtensionTab() {
                 </button>
                 <button
                   onClick={handleConnect}
-                  className={`ml-auto flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.04] px-4 py-2.5 text-[13px] font-medium text-zinc-300 transition-all hover:bg-white/[0.08] hover:text-white ${FOCUS_RING}`}
+                  className={`ml-auto flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-white/[0.06] bg-white/[0.04] px-4 py-2.5 text-[13px] font-medium text-zinc-300 transition-all hover:bg-white/[0.08] hover:text-white ${FOCUS_RING}`}
                 >
                   <RefreshCw className="size-3.5" />
                   {t('settings.extNewCode')}
@@ -1399,6 +1401,66 @@ function OnboardingTab() {
           </button>
         </div>
       </div>
+    </div>
+  )
+}
+
+function DeleteAllTab() {
+  const { t } = useTranslation()
+  const [confirming, setConfirming] = useState(false)
+  const [status, setStatus] = useState(null)
+
+  const handleDeleteAll = async () => {
+    setConfirming(false)
+    try {
+      const count = await window.api.deleteAllAccounts()
+      setStatus({ ok: true, message: t('settings.deleteAllDone', { count }) })
+    } catch (e) {
+      console.error('Erreur suppression totale :', e)
+      setStatus({ ok: false, message: t('settings.deleteAllError') })
+    }
+  }
+
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="mb-8 flex items-center gap-4">
+        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-3 shadow-lg shadow-black/20">
+          <Trash2 className="size-6 text-red-400" aria-hidden="true" />
+        </div>
+        <h3 className="text-3xl font-bold text-white">{t('settings.tabDeleteAll')}</h3>
+      </div>
+
+      <div className="rounded-3xl border border-red-500/15 bg-red-500/[0.03] p-8 shadow-2xl backdrop-blur-sm">
+        <div className="flex items-start justify-between gap-6">
+          <p className="text-sm leading-relaxed text-zinc-400">{t('settings.deleteAllDesc')}</p>
+          <button
+            onClick={() => setConfirming(true)}
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-red-500/25 bg-red-500/10 px-4 py-2.5 text-[13px] font-medium text-red-400 transition-all hover:bg-red-500/20 hover:text-red-300 ${FOCUS_RING}`}
+          >
+            <Trash2 className="size-3.5" aria-hidden="true" />
+            {t('settings.tabDeleteAll')}
+          </button>
+        </div>
+        {status && (
+          <p
+            className={`mt-4 text-[13px] ${status.ok ? 'text-emerald-400' : 'text-red-400'}`}
+            role="status"
+          >
+            {status.message}
+          </p>
+        )}
+      </div>
+
+      {confirming && (
+        <ConfirmDialog
+          title={t('settings.deleteAllConfirmTitle')}
+          description={t('settings.deleteAllConfirmDesc')}
+          confirmLabel={t('settings.tabDeleteAll')}
+          danger
+          onConfirm={handleDeleteAll}
+          onCancel={() => setConfirming(false)}
+        />
+      )}
     </div>
   )
 }
@@ -1827,7 +1889,8 @@ function Settings({ initialTab = 'language' }) {
       tabs: [
         { id: 'maintenance', label: t('settings.tabMaintenance'), icon: Link2 },
         { id: 'onboarding', label: t('settings.tabOnboarding'), icon: RotateCw },
-        { id: 'patchnotes', label: t('patchNotes.title'), icon: ScrollText }
+        { id: 'patchnotes', label: t('patchNotes.title'), icon: ScrollText },
+        { id: 'deleteAll', label: t('settings.tabDeleteAll'), icon: Trash2 }
       ]
     }
   ]
@@ -2287,6 +2350,8 @@ function Settings({ initialTab = 'language' }) {
           {activeTab === 'onboarding' && <OnboardingTab />}
 
           {activeTab === 'patchnotes' && <PatchNotesTab />}
+
+          {activeTab === 'deleteAll' && <DeleteAllTab />}
 
           {activeTab === 'system' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">

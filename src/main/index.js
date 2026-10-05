@@ -21,6 +21,7 @@ import {
   getAllAccounts,
   updateAccount,
   deleteAccount,
+  deleteAllAccounts,
   importAccounts,
   toggleFavorite,
   exportEncryptedVault,
@@ -432,6 +433,11 @@ app.whenReady().then(() => {
   ipcMain.handle('accounts:getAll', () => getAllAccounts())
   ipcMain.handle('accounts:update', (_, id, accountData) => updateAccount(id, accountData))
   ipcMain.handle('accounts:delete', (_, id) => deleteAccount(id))
+  ipcMain.handle('accounts:deleteAll', () => {
+    const count = deleteAllAccounts()
+    sendAccountsChanged()
+    return count
+  })
   ipcMain.handle('accounts:import', (_, accountsData) => importAccounts(accountsData))
   ipcMain.handle('accounts:toggle-favorite', (_, id, currentStatus) =>
     toggleFavorite(id, currentStatus)

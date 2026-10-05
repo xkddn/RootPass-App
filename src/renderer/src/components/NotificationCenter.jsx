@@ -16,6 +16,7 @@ const REGISTRY = {}
 function NotificationCenter({ accounts = [], onOpenAudit }) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
+  const [alignLeft, setAlignLeft] = useState(false)
   const [items, setItems] = useState([])
   const [unreadCount, setUnreadCount] = useState(0)
   const ref = useRef(null)
@@ -148,7 +149,12 @@ function NotificationCenter({ accounts = [], onOpenAudit }) {
   return (
     <div ref={ref} className="relative">
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          // Ouvre vers la droite s'il y a la place, sinon vers la gauche (évite le rognage)
+          const rect = ref.current?.getBoundingClientRect()
+          setAlignLeft(!!rect && rect.left + 400 <= window.innerWidth)
+          setOpen((v) => !v)
+        }}
         aria-label={t('notifications.title')}
         aria-haspopup="dialog"
         aria-expanded={open}
@@ -174,7 +180,9 @@ function NotificationCenter({ accounts = [], onOpenAudit }) {
         <div
           role="dialog"
           aria-label={t('notifications.title')}
-          className="absolute right-0 top-full z-50 mt-2 w-80 origin-top-right overflow-hidden rounded-2xl border border-white/[0.08] bg-(--surface-solid)/95 shadow-2xl shadow-black/60 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 sm:w-96"
+          className={`absolute top-full z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden ${
+            alignLeft ? 'left-0 origin-top-left' : 'right-0 origin-top-right'
+          } rounded-2xl border border-white/[0.08] bg-(--surface-solid)/95 shadow-2xl shadow-black/60 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 sm:w-96`}
         >
           <div className="flex items-center justify-between gap-2 border-b border-white/[0.06] px-4 py-3">
             <h2 className="flex items-center gap-2 text-[13px] font-semibold text-white">

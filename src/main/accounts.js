@@ -258,6 +258,11 @@ export function deleteAccount(id) {
   return true
 }
 
+export function deleteAllAccounts() {
+  getActiveKey()
+  return getDb().prepare('DELETE FROM accounts').run().changes
+}
+
 export function importAccounts(accountsArray) {
   const key = getActiveKey()
 

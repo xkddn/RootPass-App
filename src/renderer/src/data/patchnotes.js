@@ -1,5 +1,33 @@
 export const PATCH_NOTES = [
   {
+    version: '1.4.3',
+    date: '2026-10-05',
+    fr: {
+      added: [
+        'Bouton « Tout supprimer » dans les réglages (section Autre) pour vider votre coffre en une fois, avec une confirmation avant d’effacer quoi que ce soit.'
+      ],
+      improved: [],
+      removed: [],
+      fixed: [
+        'Le menu des notifications s’affiche désormais en entier, même dans une petite fenêtre.',
+        'Le bouton « Nouveau code » ne dépasse plus de son cadre lors de la connexion de l’extension navigateur.',
+        'Correction de plusieurs bugs dans les fenêtres d’ajout et de modification d’un compte.'
+      ]
+    },
+    en: {
+      added: [
+        'A “Delete everything” button in settings (Other section) to empty your vault in one go, with a confirmation before anything is erased.'
+      ],
+      improved: [],
+      removed: [],
+      fixed: [
+        'The notifications menu now shows in full, even in a small window.',
+        'The “New code” button no longer overflows its frame when connecting the browser extension.',
+        'Fixed several bugs in the add and edit account windows.'
+      ]
+    }
+  },
+  {
     version: '1.4.1',
     date: '2026-06-20',
     fr: {

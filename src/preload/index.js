@@ -13,6 +13,7 @@ const api = {
     ipcRenderer.invoke('auth:changeMasterPassword', oldPassword, newPassword),
   updateAccount: (id, accountData) => ipcRenderer.invoke('accounts:update', id, accountData),
   deleteAccount: (id) => ipcRenderer.invoke('accounts:delete', id),
+  deleteAllAccounts: () => ipcRenderer.invoke('accounts:deleteAll'),
   copyToClipboard: (text) => ipcRenderer.invoke('system:copy', text),
   readClipboard: () => ipcRenderer.invoke('system:paste'),
   importAccounts: (accountsData) => ipcRenderer.invoke('accounts:import', accountsData),
